@@ -1,6 +1,10 @@
 #include "State.h"
 #include "fake_receiver.h"
-
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <string.h>
+#include <ctime>
 /**
 	This class abstracts the Finite State Machine behaviour.
 	
@@ -19,6 +23,9 @@ public:
 	Fsa();
 	State getCurrentState();
 	void transition(char message[MAX_CAN_MESSAGE_SIZE]);
+	ofstream raw_log;   //log file where to store raw data
+	void create_session();
+	void close_session();
 
 private:
 	State currentState;
