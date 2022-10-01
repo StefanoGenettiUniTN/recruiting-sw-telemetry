@@ -80,3 +80,15 @@ The class `Fsa` has three attributes to store the statistics recorded during the
 While the machine is in the Run state the statistics are updated through the method `void update_statistics(string message_id)` which updates the statistics about the messages with ID equals to `string message_id`.
 
 The interesting statistics are stored in a `.csv` file in the log folder. The code which is executed to store the statistics is implemented in the method `void store_statistics()` of class `Fsa`. The statistics are stored when the machine is the Run state and a stop message is received. Each `.csv` file is named with the session name. So, if for example the session ID is 123, then the corresponding file of the statistics is saved as 123_statistics.csv. In this way it is easy to understand which are the statistics which are associated with each session.
+
+## Building
+The project contains a CMakeLists.txt with a basic setup to build the project.
+
+The first time building the project:
+```
+mkdir -p build
+cd build
+cmake ..
+make -j$(nproc)
+```
+This will build the executable that will be located in `./bin` directory.
