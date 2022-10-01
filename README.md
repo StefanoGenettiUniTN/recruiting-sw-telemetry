@@ -16,7 +16,7 @@ The file `State.h` contains:
 
 The computational behaviour of the finite state machine is described by the header file `Fsa.h` and its corresponding implementation `Fsa.cpp`. The core method of the class `Fsa` is `void transition(char message[MAX_CAN_MESSAGE_SIZE])`. This method is called whenever a new message is recived from the data stream.
 
-```
+```c
 #main.cpp
 //Read the data flow
 while(result_can_receive=can_receive(message)>0){
@@ -30,7 +30,7 @@ while(result_can_receive=can_receive(message)>0){
 
 According to the `currentState`, the method performs the proper operations as described by the problem requirements.
 
-```
+```c
 #Fsa.cpp
 //Different behavoiur according to current state
 switch(this->currentState){
@@ -52,7 +52,7 @@ In the Run state it is required to store the raw messages in a file. The log fil
 
 This operation is performed by the method `void create_session()` in `Fsa.cpp`.
 
-```
+```c
 #Fsa.cpp
 //Create session identifier in order to uniquely identify the log file for raw data
 //Structure: [unix time]_[rand value]
@@ -85,7 +85,7 @@ The interesting statistics are stored in a `.csv` file in the log folder. The co
 The project contains a CMakeLists.txt with a basic setup to build the project.
 
 The first time building the project:
-```
+```shell
 mkdir -p build
 cd build
 cmake ..
