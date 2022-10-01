@@ -57,9 +57,9 @@ void Fsa::transition(char message[MAX_CAN_MESSAGE_SIZE]){
         case Run:
             //When receive the stop message transition to Idle state
             if(ID==0x0A0 && payload==0x66FF){
-                this->store_statistics();   //create csv file with interesting session statistics
+                this->store_statistics();                               //create csv file with interesting session statistics
                 this->currentState = transitionFunction[currentState];
-                this->close_session();      //close current session
+                this->close_session();                                  //close current session
                 break;
             }
 
@@ -124,6 +124,7 @@ void Fsa::store_statistics(){
             mean_time_between_ID = time_differences_sum/(1.0*(occurences-1));
         }
 
+        //Write CSV record [message_ID,number_of_messages,mean_time]
         statistics<<message_ID<<","<<occurences<<","<<mean_time_between_ID<<endl;
     }
 
