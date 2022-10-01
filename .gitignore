@@ -12,3 +12,4 @@ _deps
 bin/
 build/
 log/*
+!log/log_description.md
