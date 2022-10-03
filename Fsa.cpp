@@ -13,13 +13,18 @@ State Fsa::getCurrentState()
 }
 
 void Fsa::transition(char message[MAX_CAN_MESSAGE_SIZE]){
+
+    unordered_set<char> validHexadecimal = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'}; 
+
     int counter;
 
     string ID_string="";
     uint16_t ID;
 
     string payload_string="";
-    uint64_t payload;
+    string payload_string_long="";  //store all the payload in a string, useful to save it in log files
+    uint8_t payload[8];
+    int payload_counter=0;
 
     //Parsing
     counter=0;
@@ -33,22 +38,26 @@ void Fsa::transition(char message[MAX_CAN_MESSAGE_SIZE]){
 
     //Read payload
     counter++;
-    while(message[counter]!=NULL){
-        payload_string+=message[counter];
-        counter++;
+    while(message[counter]!=NULL && validHexadecimal.count(message[counter])){
+        payload_string="";
+        for(int i=0; i<2; i++){ //read 1 byte
+            payload_string+=message[counter];
+            payload_string_long+=message[counter];
+            counter++;
+        }
+        payload[payload_counter++] = stoul(payload_string, nullptr, 16);
     }
-    payload = stoul(payload_string, nullptr, 16);
     //...end parsing
 
     //Different behavoiur according to current state
     switch(this->currentState){
         case Idle:
             //When receive the start message transition to Run state
-            if(ID==0x0A0 && payload==0x6601){
+            if(ID==0x0A0 && payload[0]==0x66 && payload[1]==0x01){
                 this->currentState = transitionFunction[currentState];
                 this->create_session();
             }
-            if(ID==0x0A0 && payload==0xFF01){
+            if(ID==0x0A0 && payload[0]==0xFF && payload[1]==0x01){
                 this->currentState = transitionFunction[currentState];
                 this->create_session();
             }
@@ -56,7 +65,7 @@ void Fsa::transition(char message[MAX_CAN_MESSAGE_SIZE]){
 
         case Run:
             //When receive the stop message transition to Idle state
-            if(ID==0x0A0 && payload==0x66FF){
+            if(ID==0x0A0 && payload[0]==0x66 && payload[1]==0xFF){
                 this->store_statistics();                               //create csv file with interesting session statistics
                 this->currentState = transitionFunction[currentState];
                 this->close_session();                                  //close current session
@@ -64,7 +73,7 @@ void Fsa::transition(char message[MAX_CAN_MESSAGE_SIZE]){
             }
 
             //Write record in log file
-            raw_log<<"("<<time(0)<<") "<<ID_string<<"#"<<payload_string<<endl;
+            raw_log<<"("<<time(0)<<") "<<ID_string<<"#"<<payload_string_long<<endl;
 
             //Update statistics increasing the number of messages with the current ID and the time when the message has been recived
             update_statistics(ID_string);

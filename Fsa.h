@@ -8,6 +8,7 @@
 #include <chrono>
 #include <vector>
 #include <map>
+#include <unordered_set>
 
 /**
 	This class abstracts the Finite State Machine behaviour.
