@@ -68,8 +68,7 @@ raw_log_session_name += to_string((rand()%(1000-1+1))+1);
 Each received message is parsed in order to get the message ID and the message payload. The parsing is performed by the method `void transition(char message[MAX_CAN_MESSAGE_SIZE])` in `Fsa.cpp`. The computation can be summurized as follows:
 1. Read the elements of the array `char message[]` until the algorithm finds the character '#'. Each character is appended to an initially empty string named `string ID_string`. 
 2. At this point the string `ID_string` containes the message identifier. This value is converted to be stored in the variable `uint16_t ID` using the instruction `ID = stoul(ID_string, nullptr, 16)`.
-3. After that, the elements of the array `char message[]` are visited until the `NULL` character. Each character is appended to an initially empty string named `string payload_string`.
-4. Finally, the string `payload_string`, which containes the message payload, is converted to be stored in the variable `uint64_t payload` using the instruction `payload = stoul(payload_string, nullptr, 16)`.
+3. After that, the elements of the array `char message[]` are visited until the `NULL` character. The payload is read 1 byte at a time. At first each byte (couple of hexidecimal digits) is stored in a string `payload_string`. Then each byte is converted using the instruction `payload = stoul(payload_string, nullptr, 16)` and stored in an element of the array `uint8_t payload[8]`.
 
 ### Statistics
 The class `Fsa` has three attributes to store the statistics recorded during the computation:
